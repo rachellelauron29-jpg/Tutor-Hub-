@@ -1,0 +1,1782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="icon" type="icon/png" href="/icon-192.png">
+<link rel="apple-touch-icon" href="/icon-192.png">
+
+<link rel="manifest" href="/manifest.json">
+
+<meta name="theme-color" content="#ffffff">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TutorHub - Tutor Booking System</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+ margin:0;
+ font-family:Arial,sans-serif;
+ background:#f4f6fb;
+ color:#263248;
+}
+
+header{
+ background:#243b63;
+ color:white;
+ padding:18px 5%;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ flex-wrap:wrap;
+ gap:12px;
+}
+
+header h2{margin:0}
+
+nav{
+ display:flex;
+ gap:7px;
+ flex-wrap:wrap;
+}
+
+button{
+ border:0;
+ border-radius:6px;
+ padding:10px 14px;
+ cursor:pointer;
+ font-weight:bold;
+}
+
+nav button{background:white;color:#243b63}
+
+.primary{background:#315caa;color:white}
+.success{background:#198754;color:white}
+.danger{background:#dc3545;color:white}
+.secondary{background:#e4e9f2;color:#263248}
+.warning{background:#e8a317;color:#222}
+
+button:hover{opacity:.88}
+
+main{
+ max-width:1150px;
+ margin:28px auto;
+ padding:0 16px;
+}
+
+.hero{
+ background:#dce8ff;
+ padding:35px;
+ border-radius:12px;
+ margin-bottom:22px;
+}
+
+.hero h1{font-size:34px;margin-top:0}
+
+.section{
+ background:white;
+ padding:22px;
+ border-radius:10px;
+ margin-bottom:22px;
+ box-shadow:0 2px 9px #0000000d;
+}
+
+.grid{
+ display:grid;
+ grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+ gap:16px;
+}
+
+.card{
+ border:1px solid #e1e5ed;
+ border-radius:9px;
+ padding:17px;
+ margin-bottom:12px;
+}
+
+.card h3{margin-top:0}
+
+input,select{
+ width:100%;
+ padding:11px;
+ margin:7px 0 14px;
+ border:1px solid #ccd3df;
+ border-radius:6px;
+ font-size:15px;
+}
+
+label{font-weight:bold;font-size:14px}
+
+form button{width:100%;margin-top:5px}
+
+.hidden{display:none!important}
+
+.muted{color:#68758a}
+.price{font-weight:bold;color:#315caa}
+
+.status{
+ display:inline-block;
+ padding:5px 9px;
+ border-radius:20px;
+ background:#fff0c2;
+ color:#765500;
+ font-size:12px;
+ font-weight:bold;
+}
+
+.status.Accepted{background:#d6f5df;color:#146c35}
+.status.Rejected,.status.Cancelled{background:#ffe0e0;color:#a32020}
+
+.actions{
+ display:flex;
+ gap:7px;
+ flex-wrap:wrap;
+ margin-top:12px;
+}
+
+.actions button{font-size:12px}
+
+#message{
+ padding:12px;
+ border-radius:7px;
+ margin-bottom:15px;
+ background:#dce8ff;
+ display:none;
+}
+
+.modal{
+ position:fixed;
+ inset:0;
+ background:#0009;
+ display:flex;
+ justify-content:center;
+ align-items:center;
+ padding:15px;
+ z-index:10;
+}
+
+.modal-box{
+ background:white;
+ padding:25px;
+ border-radius:12px;
+ width:100%;
+ max-width:430px;
+ max-height:90vh;
+ overflow:auto;
+}
+
+.close{float:right;background:#eee}
+
+table{
+ width:100%;
+ border-collapse:collapse;
+ min-width:650px;
+}
+
+th,td{
+ padding:11px;
+ border-bottom:1px solid #e5e8ef;
+ text-align:left;
+ font-size:14px;
+}
+
+th{background:#edf2fa}
+
+.table-wrap{overflow-x:auto}
+
+.stat{
+ background:#edf2fa;
+ padding:16px;
+ border-radius:8px;
+}
+
+.stat h2{
+ margin:5px 0;
+ color:#315caa;
+}
+
+footer{
+ text-align:center;
+ padding:25px;
+ background:#243b63;
+ color:white;
+ margin-top:40px;
+}
+
+hr{
+ border:0;
+ border-top:1px solid #e5e8ef;
+ margin:22px 0;
+}
+
+@media(max-width:600px){
+ header{padding:15px}
+ .hero h1{font-size:27px}
+}
+.tutor-image{
+  width:130px;
+  height:130px;
+  object-fit:cover;
+  border-radius:50%;
+  display:block;
+  margin:0 auto 15px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+ <h2>📚 TutorHub</h2>
+
+ <nav>
+  <button onclick="showPage('home')">Home</button>
+  <button onclick="showPage('tutors')">Find Tutors</button>
+  <button onclick="showPage('studentBookings')">My Bookings</button>
+  <button onclick="showPage('tutorDashboard')">Tutor Dashboard</button>
+  <button onclick="showPage('adminDashboard')">Admin</button>
+
+  <button id="studentLoginButton"
+   onclick="openAuth('student')">Student Login</button>
+
+  <button id="tutorLoginButton"
+   onclick="openAuth('tutor')">Tutor Login</button>
+
+  <button id="logoutButton"
+   class="danger hidden"
+   onclick="logout()">Logout</button>
+ </nav>
+</header>
+
+<main>
+
+<div id="message"></div>
+
+<!-- HOME PAGE -->
+<section id="home" class="page">
+
+ <div class="hero">
+  <h1>Find the Right Tutor for You!</h1>
+  <p>Learn better. Study smarter. Achieve more with TutorHub.</p>
+  <button class="primary" onclick="showPage('tutors')">
+   Find a Tutor
+  </button>
+ </div>
+
+ <div class="section">
+  <h2>Welcome to TutorHub</h2>
+  <p>
+   Connect with tutors, book lessons, and manage your learning
+   sessions in one place.
+  </p>
+
+  <button class="primary" onclick="openAuth('student')">
+   Register as Student
+  </button>
+
+  <button class="secondary" onclick="openAuth('tutor')">
+   Register as Tutor
+  </button>
+ </div>
+
+</section>
+
+<!-- TUTOR LISTINGS -->
+<section id="tutors" class="page hidden">
+
+ <div class="section">
+  <h2>Available Tutors</h2>
+
+  <input
+   id="searchInput"
+   placeholder="Search tutor or subject..."
+   oninput="displayTutors()"
+  >
+
+  <div id="tutorList" class="grid"></div>
+ </div>
+
+</section>
+
+<!-- STUDENT BOOKINGS -->
+<section id="studentBookings" class="page hidden">
+
+ <div class="section">
+  <h2>My Bookings</h2>
+  <div id="studentBookingList"></div>
+ </div>
+
+</section>
+
+<!-- TUTOR DASHBOARD -->
+<section id="tutorDashboard" class="page hidden">
+
+ <div class="section">
+  <h2>Tutor Dashboard</h2>
+
+  <div id="tutorWelcome">
+   <p>Please log in using your tutor account.</p>
+   <button class="primary" onclick="openAuth('tutor')">
+    Tutor Login
+   </button>
+  </div>
+
+  <div id="tutorPanel" class="hidden">
+   <h3 id="tutorName"></h3>
+   <p class="muted">Manage your student booking requests.</p>
+   <div id="tutorBookingList"></div>
+  </div>
+
+ </div>
+
+</section>
+
+<!-- ADMIN DASHBOARD -->
+<section id="adminDashboard" class="page hidden">
+
+ <div class="section">
+
+  <h2>🛡️ Admin Dashboard</h2>
+
+  <div id="adminWelcome">
+   <p>Administrator login is required.</p>
+   <button class="primary" onclick="openAuth('admin')">
+    Admin Login
+   </button>
+  </div>
+
+  <div id="adminPanel" class="hidden">
+
+   <h3>Dashboard Overview</h3>
+
+   <div class="grid">
+
+    <div class="stat">
+     <p>Total Students</p>
+     <h2 id="totalStudents">0</h2>
+    </div>
+
+    <div class="stat">
+     <p>Total Tutors</p>
+     <h2 id="totalTutors">0</h2>
+    </div>
+
+    <div class="stat">
+     <p>Total Bookings</p>
+     <h2 id="totalBookings">0</h2>
+    </div>
+
+    <div class="stat">
+     <p>Pending Bookings</p>
+     <h2 id="pendingBookings">0</h2>
+    </div>
+
+   </div>
+
+   <hr>
+
+   <!-- STUDENT MANAGEMENT -->
+   <h3>Student Management</h3>
+
+   <input
+    id="studentSearch"
+    placeholder="Search student by name or email..."
+    oninput="renderAdminStudents()"
+   >
+
+   <div id="adminStudents" class="table-wrap"></div>
+
+   <hr>
+
+   <!-- TUTOR MANAGEMENT -->
+   <h3>Tutor Management</h3>
+
+   <input
+    id="tutorSearch"
+    placeholder="Search tutor by name, email, or subject..."
+    oninput="renderAdminTutors()"
+   >
+
+   <div id="adminTutors" class="table-wrap"></div>
+
+   <hr>
+
+   <!-- BOOKING MANAGEMENT -->
+   <h3>Booking Management</h3>
+
+   <div id="adminBookings" class="table-wrap"></div>
+
+  </div>
+
+ </div>
+
+</section>
+
+</main>
+
+<!-- AUTH MODAL -->
+<div id="authModal" class="modal hidden">
+
+ <div class="modal-box">
+
+  <button class="close" onclick="closeAuth()">✕</button>
+
+  <h2 id="authTitle">Student Account</h2>
+
+  <div id="roleButtons">
+   <button class="secondary" onclick="switchRole('student')">
+    Student
+   </button>
+
+   <button class="secondary" onclick="switchRole('tutor')">
+    Tutor
+   </button>
+
+   <button class="secondary" onclick="switchRole('admin')">
+    Admin
+   </button>
+  </div>
+
+  <!-- LOGIN -->
+  <div id="loginArea">
+
+   <form id="loginForm">
+
+    <label>Email</label>
+    <input type="email" id="loginEmail" required>
+
+    <label>Password</label>
+    <input type="password" id="loginPassword" required>
+
+    <button class="primary" type="submit">Login</button>
+
+   </form>
+
+   <p id="registerPrompt">
+    Don't have an account?
+    <a href="#" onclick="showRegister();return false">
+     Register here
+    </a>
+   </p>
+
+  </div>
+
+  <!-- REGISTER -->
+  <div id="registerArea" class="hidden">
+
+   <form id="registerForm">
+
+    <label>Full Name</label>
+    <input id="regName" required>
+
+    <label>Email</label>
+    <input type="email" id="regEmail" required>
+
+    <label>Password</label>
+    <input type="password" id="regPassword" minlength="6" required>
+
+    <div id="tutorFields" class="hidden">
+
+     <label>Subject You Teach</label>
+     <input id="regSubject" placeholder="Example: Mathematics">
+
+     <label>Hourly Rate (PHP)</label>
+     <input type="number" id="regRate" min="1"
+      placeholder="Example: 300">
+
+    </div>
+
+    <button class="primary" type="submit">
+     Create Account
+    </button>
+
+   </form>
+
+   <p>
+    Already registered?
+    <a href="#" onclick="showLogin();return false">Login here</a>
+   </p>
+
+  </div>
+
+ </div>
+
+</div>
+
+<!-- BOOK SESSION MODAL -->
+<div id="bookingModal" class="modal hidden">
+
+ <div class="modal-box">
+
+  <button class="close" onclick="closeBooking()">✕</button>
+
+  <h2>Book Session</h2>
+
+  <form id="bookingForm">
+
+   <input type="hidden" id="bookingTutorId">
+
+   <label>Student Name</label>
+   <input id="bookingStudentName" readonly>
+
+   <label>Student Email</label>
+   <input id="bookingStudentEmail" readonly>
+
+   <label>Tutor</label>
+   <input id="bookingTutorName" readonly>
+
+   <label>Subject</label>
+   <input id="bookingSubject" readonly>
+
+   <label>Lesson Date</label>
+   <input type="date" id="bookingDate" required>
+
+   <label>Lesson Time</label>
+   <input type="time" id="bookingTime" required>
+
+   <button class="primary" type="submit">
+    Confirm Session
+   </button>
+
+  </form>
+
+ </div>
+
+</div>
+
+<footer>
+ <p>© 2026 TutorHub | Learn Better, Achieve More</p>
+</footer>
+
+<script>
+
+// ====================================
+// 1. DATA AND STORAGE
+// ====================================
+
+const defaultTutors = [
+ {
+  id:"t1",
+  name:"Rachelle Lauron",
+  subject:"Mathematics",
+  rate:300,
+  image:"images/i.jfif",
+  email:"rachellelauron@.com",
+  builtIn:true
+  
+ },
+ {
+  id:"t2",
+  name:"Sarah Johnson",
+  subject:"Science",
+  rate:350,
+  image:"images/a.jpg",
+  email:"sarah@example.com",
+  builtIn:true
+ },
+ {
+  id:"t3",
+  name:"Princess Laurier",
+  subject:"English",
+  rate:250,
+  image:"images/b.jpg",
+  email:"michael@example.com",
+  builtIn:true
+ },
+ {
+  id:"t4",
+  name:"Charlotte Reddit",
+  subject:"Programming",
+  rate:400,
+  image:"images/c.jpg",
+  email:"emily@example.com",
+  builtIn:true
+ },
+ {
+  id:"t4",
+  name:"Jack Mavis",
+  subject:"Information Technology",
+  rate:400,
+  image:"images/d.jpg",
+  email:"emily@example.com",
+  builtIn:true
+ },
+ {
+  id:"t4",
+  name:"Marvs Sterling",
+  subject:"Software Engineering ",
+  rate:400,
+  image:"images/f.png",
+  email:"emily@example.com",
+  builtIn:true
+ },
+ {
+  id:"t4",
+  name:"Ethan Clark",
+  subject:"Fundamentals Of Programming",
+  rate:400,
+  image:"images/h.jpg",
+  email:"emily@example.com",
+  builtIn:true
+ },
+ {
+  id:"t4",
+  name:"James Davis",
+  subject:"Introduction to Computer",
+  rate:400,
+  image:"images/j.jpg",
+  email:"emily@example.com",
+  builtIn:true
+ }
+];
+
+function getData(key){
+ try{
+  const result=JSON.parse(localStorage.getItem(key));
+  return Array.isArray(result)?result:[];
+ }catch{
+  return [];
+ }
+}
+
+let students=getData("tutorStudents");
+let tutors=getData("tutorAccounts");
+let bookings=getData("tutorBookings");
+
+let currentUser=JSON.parse(
+ localStorage.getItem("currentStudent")||"null"
+);
+
+let currentRole=currentUser?.role||null;
+let authRole="student";
+
+function saveData(){
+ localStorage.setItem("tutorStudents",JSON.stringify(students));
+ localStorage.setItem("tutorAccounts",JSON.stringify(tutors));
+ localStorage.setItem("tutorBookings",JSON.stringify(bookings));
+}
+
+function makeId(){
+ return Date.now().toString(36)+
+ Math.random().toString(36).slice(2,7);
+}
+
+function escapeHTML(value){
+ return String(value??"").replace(/[&<>"']/g,c=>({
+  "&":"&amp;",
+  "<":"&lt;",
+  ">":"&gt;",
+  '"':"&quot;",
+  "'":"&#39;"
+ }[c]));
+}
+
+function allTutors(){
+ return [...defaultTutors,...tutors];
+}
+
+// ====================================
+// 2. GENERAL FUNCTIONS
+// ====================================
+
+function showMessage(message){
+ const box=document.getElementById("message");
+
+ box.textContent=message;
+ box.style.display="block";
+
+ setTimeout(()=>{
+  box.style.display="none";
+ },3500);
+}
+
+function showPage(page){
+
+ document.querySelectorAll(".page").forEach(p=>{
+  p.classList.add("hidden");
+ });
+
+ document.getElementById(page).classList.remove("hidden");
+
+ if(page==="tutors")displayTutors();
+
+ if(page==="studentBookings")displayStudentBookings();
+
+ if(page==="tutorDashboard")displayTutorDashboard();
+
+ if(page==="adminDashboard")displayAdminDashboard();
+
+ window.scrollTo(0,0);
+}
+
+function updateAccountDisplay(){
+
+ const loggedIn=!!currentUser;
+
+ document.getElementById("studentLoginButton")
+ .classList.toggle("hidden",loggedIn);
+
+ document.getElementById("tutorLoginButton")
+ .classList.toggle("hidden",loggedIn);
+
+ document.getElementById("logoutButton")
+ .classList.toggle("hidden",!loggedIn);
+}
+
+// ====================================
+// 3. LOGIN AND REGISTRATION
+// ====================================
+
+function openAuth(role){
+
+ authRole=role;
+
+ document.getElementById("authModal")
+ .classList.remove("hidden");
+
+ showLogin();
+}
+
+function closeAuth(){
+ document.getElementById("authModal")
+ .classList.add("hidden");
+}
+
+function switchRole(role){
+ authRole=role;
+ showLogin();
+}
+
+function updateAuthTitle(){
+
+ document.getElementById("authTitle").textContent=
+ authRole==="student"?"Student Account":
+ authRole==="tutor"?"Tutor Account":
+ "Admin Account";
+
+ document.getElementById("tutorFields")
+ .classList.toggle("hidden",authRole!=="tutor");
+
+ document.getElementById("registerPrompt")
+ .classList.toggle("hidden",authRole==="admin");
+
+ document.getElementById("roleButtons")
+ .classList.toggle("hidden",authRole==="admin");
+}
+
+function showLogin(){
+
+ document.getElementById("loginArea")
+ .classList.remove("hidden");
+
+ document.getElementById("registerArea")
+ .classList.add("hidden");
+
+ updateAuthTitle();
+}
+
+function showRegister(){
+
+ if(authRole==="admin")return;
+
+ document.getElementById("loginArea")
+ .classList.add("hidden");
+
+ document.getElementById("registerArea")
+ .classList.remove("hidden");
+
+ updateAuthTitle();
+}
+
+// REGISTER
+document.getElementById("registerForm")
+.addEventListener("submit",function(e){
+
+ e.preventDefault();
+
+ const name=document.getElementById("regName").value.trim();
+
+ const email=document.getElementById("regEmail")
+ .value.trim().toLowerCase();
+
+ const password=document.getElementById("regPassword").value;
+
+ const accounts=authRole==="student"?students:tutors;
+
+ if(accounts.some(a=>a.email===email)){
+  showMessage("This email is already registered.");
+  return;
+ }
+
+ if(authRole==="student"){
+
+  const student={
+   id:makeId(),
+   name,
+   email,
+   password
+  };
+
+  students.push(student);
+
+  saveData();
+
+  loginUser(student,"student");
+
+ }else{
+
+  const subject=document.getElementById("regSubject")
+  .value.trim();
+
+  const rate=Number(document.getElementById("regRate").value);
+
+  if(!subject||!Number.isFinite(rate)||rate<=0){
+   showMessage("Enter a valid subject and hourly rate.");
+   return;
+  }
+
+  const tutor={
+   id:makeId(),
+   name,
+   email,
+   password,
+   subject,
+   rate
+  };
+
+  tutors.push(tutor);
+
+  saveData();
+
+  loginUser(tutor,"tutor");
+ }
+
+ closeAuth();
+
+ showMessage("Account created successfully!");
+});
+
+// LOGIN
+document.getElementById("loginForm")
+.addEventListener("submit",function(e){
+
+ e.preventDefault();
+
+ const email=document.getElementById("loginEmail")
+ .value.trim().toLowerCase();
+
+ const password=document.getElementById("loginPassword").value;
+
+ // DEMO ADMIN LOGIN
+ if(authRole==="admin"){
+
+  if(email==="admin@tutorhub.com"&&password==="admin123"){
+
+   currentUser={
+    id:"admin",
+    name:"Administrator",
+    email,
+    role:"admin"
+   };
+
+   currentRole="admin";
+
+   localStorage.setItem(
+    "currentStudent",
+    JSON.stringify(currentUser)
+   );
+
+   closeAuth();
+
+   updateAccountDisplay();
+
+   showPage("adminDashboard");
+
+   showMessage("Welcome, Administrator!");
+
+  }else{
+   showMessage("Incorrect admin email or password.");
+  }
+
+  return;
+ }
+
+ const accounts=authRole==="student"?students:tutors;
+
+ const account=accounts.find(a=>
+  a.email===email&&a.password===password
+ );
+
+ if(!account){
+  showMessage("Incorrect email or password.");
+  return;
+ }
+
+ loginUser(account,authRole);
+
+ closeAuth();
+
+ showMessage("Welcome, "+account.name+"!");
+});
+
+function loginUser(account,role){
+
+ currentUser={
+  id:account.id,
+  name:account.name,
+  email:account.email,
+  role
+ };
+
+ currentRole=role;
+
+ localStorage.setItem(
+  "currentStudent",
+  JSON.stringify(currentUser)
+ );
+
+ updateAccountDisplay();
+
+ if(role==="tutor"){
+  showPage("tutorDashboard");
+ }else{
+  showPage("tutors");
+ }
+}
+
+function logout(){
+
+ currentUser=null;
+ currentRole=null;
+
+ localStorage.removeItem("currentStudent");
+
+ updateAccountDisplay();
+
+ showPage("home");
+
+ showMessage("You have logged out.");
+}
+
+// ====================================
+// 4. TUTOR LISTINGS
+// ====================================
+
+function displayTutors(){
+
+ const list=document.getElementById("tutorList");
+
+ const search=document.getElementById("searchInput")
+ .value.toLowerCase();
+
+ const results=allTutors().filter(t=>
+  (t.name+" "+t.subject).toLowerCase().includes(search)
+ );
+
+ list.innerHTML="";
+
+ if(!results.length){
+  list.innerHTML="<p>No tutors found.</p>";
+  return;
+ }
+
+ results.forEach(t=>{
+
+  const card=document.createElement("div");
+
+  card.className="card";
+
+  card.innerHTML = `
+    ${t.image ? `
+        <img src="${t.image}"
+             alt="${escapeHTML(t.name)}"
+             class="tutor-image">
+    ` : ""}
+
+    <h3>${escapeHTML(t.name)}</h3>
+
+    <p>Subject: ${escapeHTML(t.subject)}</p>
+
+    <p class="price">
+        ₱${Number(t.rate).toLocaleString()} / hour
+    </p>
+
+    <button class="primary">Book Session</button>
+`;
+
+  card.querySelector("button").onclick=()=>{
+   openBooking(t.id);
+  };
+
+  list.appendChild(card);
+
+ });
+}
+
+// ====================================
+// 5. BOOK SESSION
+// ====================================
+
+function openBooking(tutorId){
+
+ if(!currentUser||currentRole!=="student"){
+
+  showMessage("Please log in as a student first.");
+
+  openAuth("student");
+
+  return;
+ }
+
+ const tutor=allTutors().find(t=>t.id===tutorId);
+
+ if(!tutor)return;
+
+ document.getElementById("bookingTutorId").value=tutor.id;
+
+ document.getElementById("bookingStudentName").value=
+ currentUser.name;
+
+ document.getElementById("bookingStudentEmail").value=
+ currentUser.email;
+
+ document.getElementById("bookingTutorName").value=
+ tutor.name;
+
+ document.getElementById("bookingSubject").value=
+ tutor.subject;
+
+ document.getElementById("bookingDate").min=
+ new Date().toISOString().split("T")[0];
+
+ document.getElementById("bookingModal")
+ .classList.remove("hidden");
+}
+
+function closeBooking(){
+
+ document.getElementById("bookingModal")
+ .classList.add("hidden");
+}
+
+document.getElementById("bookingForm")
+.addEventListener("submit",function(e){
+
+ e.preventDefault();
+
+ if(!currentUser||currentRole!=="student")return;
+
+ const tutorId=document.getElementById("bookingTutorId").value;
+
+ const tutor=allTutors().find(t=>t.id===tutorId);
+
+ const date=document.getElementById("bookingDate").value;
+
+ const time=document.getElementById("bookingTime").value;
+
+ if(!tutor)return;
+
+ const chosenDate=new Date(date+"T"+time);
+
+ if(Number.isNaN(chosenDate.getTime())||chosenDate<=new Date()){
+
+  showMessage("Please select a future date and time.");
+
+  return;
+ }
+
+ bookings.push({
+
+  id:makeId(),
+
+  studentId:currentUser.id,
+
+  studentName:currentUser.name,
+
+  studentEmail:currentUser.email,
+
+  tutorId:tutor.id,
+
+  tutor:tutor.name,
+
+  subject:tutor.subject,
+
+  rate:tutor.rate,
+
+  date,
+
+  time,
+
+  status:"Pending"
+
+ });
+
+ saveData();
+
+ closeBooking();
+
+ this.reset();
+
+ showPage("studentBookings");
+
+ showMessage("Your session request has been submitted!");
+
+});
+
+// ====================================
+// 6. STUDENT BOOKING DASHBOARD
+// ====================================
+
+function displayStudentBookings(){
+
+ const area=document.getElementById("studentBookingList");
+
+ area.innerHTML="";
+
+ if(!currentUser||currentRole!=="student"){
+
+  area.innerHTML=
+  "<p>Please log in as a student to view bookings.</p>";
+
+  return;
+ }
+
+ const mine=bookings.filter(b=>
+  b.studentId===currentUser.id
+ );
+
+ if(!mine.length){
+
+  area.innerHTML="<p>You have no bookings yet.</p>";
+
+  return;
+ }
+
+ mine.forEach(b=>{
+
+  const card=document.createElement("div");
+
+  card.className="card";
+
+  card.innerHTML=`
+   <h3>${escapeHTML(b.tutor)}</h3>
+   <p>Subject: ${escapeHTML(b.subject)}</p>
+   <p>Session: ${escapeHTML(b.date)} at ${escapeHTML(b.time)}</p>
+   <p>Rate: ₱${Number(b.rate||0).toLocaleString()} / hour</p>
+   <span class="status ${escapeHTML(b.status)}">
+    ${escapeHTML(b.status)}
+   </span>
+  `;
+
+  if(b.status==="Pending"){
+
+   const cancel=document.createElement("button");
+
+   cancel.className="danger";
+
+   cancel.textContent="Cancel Booking";
+
+   cancel.onclick=()=>{
+    cancelBooking(b.id);
+   };
+
+   card.appendChild(cancel);
+  }
+
+  area.appendChild(card);
+
+ });
+}
+
+function cancelBooking(id){
+
+ const booking=bookings.find(b=>
+  b.id===id&&b.studentId===currentUser?.id
+ );
+
+ if(!booking||booking.status!=="Pending")return;
+
+ if(!confirm("Cancel this booking?"))return;
+
+ booking.status="Cancelled";
+
+ saveData();
+
+ displayStudentBookings();
+
+ showMessage("Booking cancelled.");
+}
+
+// ====================================
+// 7. TUTOR DASHBOARD
+// ====================================
+
+function displayTutorDashboard(){
+
+ const welcome=document.getElementById("tutorWelcome");
+
+ const panel=document.getElementById("tutorPanel");
+
+ if(!currentUser||currentRole!=="tutor"){
+
+  welcome.classList.remove("hidden");
+
+  panel.classList.add("hidden");
+
+  return;
+ }
+
+ welcome.classList.add("hidden");
+
+ panel.classList.remove("hidden");
+
+ document.getElementById("tutorName").textContent=
+ "Welcome, "+currentUser.name;
+
+ const area=document.getElementById("tutorBookingList");
+
+ area.innerHTML="";
+
+ const mine=bookings.filter(b=>
+  b.tutorId===currentUser.id||
+  (!b.tutorId&&b.tutor===currentUser.name)
+ );
+
+ if(!mine.length){
+
+  area.innerHTML="<p>You have no booking requests yet.</p>";
+
+  return;
+ }
+
+ mine.forEach(b=>{
+
+  const card=document.createElement("div");
+
+  card.className="card";
+
+  card.innerHTML=`
+   <h3>Student: ${escapeHTML(b.studentName)}</h3>
+   <p>Email: ${escapeHTML(b.studentEmail)}</p>
+   <p>Subject: ${escapeHTML(b.subject)}</p>
+   <p>Session: ${escapeHTML(b.date)} at ${escapeHTML(b.time)}</p>
+   <span class="status ${escapeHTML(b.status)}">
+    ${escapeHTML(b.status)}
+   </span>
+  `;
+
+  if(b.status==="Pending"){
+
+   const actions=document.createElement("div");
+
+   actions.className="actions";
+
+   const accept=document.createElement("button");
+
+   accept.className="success";
+
+   accept.textContent="Accept";
+
+   accept.onclick=()=>{
+    updateTutorBooking(b.id,"Accepted");
+   };
+
+   const reject=document.createElement("button");
+
+   reject.className="danger";
+
+   reject.textContent="Reject";
+
+   reject.onclick=()=>{
+    updateTutorBooking(b.id,"Rejected");
+   };
+
+   actions.append(accept,reject);
+
+   card.appendChild(actions);
+  }
+
+  area.appendChild(card);
+
+ });
+}
+
+function updateTutorBooking(id,status){
+
+ if(!currentUser||currentRole!=="tutor")return;
+
+ const booking=bookings.find(b=>
+  b.id===id&&
+  (
+   b.tutorId===currentUser.id||
+   (!b.tutorId&&b.tutor===currentUser.name)
+  )
+ );
+
+ if(!booking||booking.status!=="Pending")return;
+
+ booking.status=status;
+
+ saveData();
+
+ displayTutorDashboard();
+
+ showMessage("Booking "+status.toLowerCase()+".");
+}
+
+// ====================================
+// 8. ADMIN DASHBOARD
+// ====================================
+
+function displayAdminDashboard(){
+
+ const welcome=document.getElementById("adminWelcome");
+
+ const panel=document.getElementById("adminPanel");
+
+ if(!currentUser||currentRole!=="admin"){
+
+  welcome.classList.remove("hidden");
+
+  panel.classList.add("hidden");
+
+  return;
+ }
+
+ welcome.classList.add("hidden");
+
+ panel.classList.remove("hidden");
+
+ document.getElementById("totalStudents").textContent=
+ students.length;
+
+ document.getElementById("totalTutors").textContent=
+ tutors.length;
+
+ document.getElementById("totalBookings").textContent=
+ bookings.length;
+
+ document.getElementById("pendingBookings").textContent=
+ bookings.filter(b=>b.status==="Pending").length;
+
+ renderAdminStudents();
+
+ renderAdminTutors();
+
+ renderAdminBookings();
+}
+
+// ====================================
+// 9. ADMIN STUDENT MANAGEMENT
+// ====================================
+
+function renderAdminStudents(){
+
+ const area=document.getElementById("adminStudents");
+
+ const search=document.getElementById("studentSearch")
+ .value.toLowerCase();
+
+ const filtered=students.filter(s=>
+  (s.name+" "+s.email).toLowerCase().includes(search)
+ );
+
+ if(!filtered.length){
+
+  area.innerHTML="<p>No students found.</p>";
+
+  return;
+ }
+
+ area.innerHTML=`
+  <table>
+   <tr>
+    <th>Name</th>
+    <th>Email</th>
+    <th>Actions</th>
+   </tr>
+
+   ${filtered.map(s=>`
+    <tr>
+     <td>${escapeHTML(s.name)}</td>
+     <td>${escapeHTML(s.email)}</td>
+     <td>
+      <button class="primary"
+       onclick="editStudent('${s.id}')">Edit</button>
+
+      <button class="danger"
+       onclick="deleteStudent('${s.id}')">Delete</button>
+     </td>
+    </tr>
+   `).join("")}
+
+  </table>
+ `;
+}
+
+// EDIT STUDENT
+function editStudent(id){
+
+ if(!currentUser||currentRole!=="admin")return;
+
+ const student=students.find(s=>s.id===id);
+
+ if(!student)return;
+
+ const newName=prompt(
+  "Enter updated student name:",
+  student.name
+ );
+
+ if(newName===null)return;
+
+ const newEmail=prompt(
+  "Enter updated student email:",
+  student.email
+ );
+
+ if(newEmail===null)return;
+
+ const name=newName.trim();
+
+ const email=newEmail.trim().toLowerCase();
+
+ if(!name||!email||!email.includes("@")){
+
+  showMessage("Please enter a valid name and email.");
+
+  return;
+ }
+
+ if(students.some(s=>s.id!==id&&s.email===email)){
+
+  showMessage("That student email is already registered.");
+
+  return;
+ }
+
+ student.name=name;
+
+ student.email=email;
+
+ bookings.forEach(b=>{
+
+  if(b.studentId===id){
+
+   b.studentName=name;
+
+   b.studentEmail=email;
+  }
+
+ });
+
+ if(currentUser.id===id){
+
+  currentUser.name=name;
+
+  currentUser.email=email;
+
+  localStorage.setItem(
+   "currentStudent",
+   JSON.stringify(currentUser)
+  );
+ }
+
+ saveData();
+
+ displayAdminDashboard();
+
+ showMessage("Student account updated!");
+}
+
+// DELETE STUDENT
+function deleteStudent(id){
+
+ if(!currentUser||currentRole!=="admin")return;
+
+ if(!confirm("Delete this student account and their bookings?"))return;
+
+ students=students.filter(s=>s.id!==id);
+
+ bookings=bookings.filter(b=>b.studentId!==id);
+
+ saveData();
+
+ displayAdminDashboard();
+
+ showMessage("Student account deleted.");
+}
+
+// ====================================
+// 10. ADMIN TUTOR MANAGEMENT
+// ====================================
+
+function renderAdminTutors(){
+
+ const area=document.getElementById("adminTutors");
+
+ const search=document.getElementById("tutorSearch")
+ .value.toLowerCase();
+
+ const filtered=tutors.filter(t=>
+  (t.name+" "+t.email+" "+t.subject)
+  .toLowerCase().includes(search)
+ );
+
+ if(!filtered.length){
+
+  area.innerHTML="<p>No registered tutors found.</p>";
+
+  return;
+ }
+
+ area.innerHTML=`
+  <table>
+   <tr>
+    <th>Name</th>
+    <th>Email</th>
+    <th>Subject</th>
+    <th>Rate</th>
+    <th>Actions</th>
+   </tr>
+
+   ${filtered.map(t=>`
+    <tr>
+     <td>${escapeHTML(t.name)}</td>
+     <td>${escapeHTML(t.email)}</td>
+     <td>${escapeHTML(t.subject)}</td>
+     <td>₱${Number(t.rate).toLocaleString()}</td>
+     <td>
+      <button class="primary"
+       onclick="editTutor('${t.id}')">Edit</button>
+
+      <button class="danger"
+       onclick="deleteTutor('${t.id}')">Delete</button>
+     </td>
+    </tr>
+   `).join("")}
+
+  </table>
+ `;
+}
+
+// EDIT TUTOR
+function editTutor(id){
+
+ if(!currentUser||currentRole!=="admin")return;
+
+ const tutor=tutors.find(t=>t.id===id);
+
+ if(!tutor)return;
+
+ const newName=prompt(
+  "Enter updated tutor name:",
+  tutor.name
+ );
+
+ if(newName===null)return;
+
+ const newEmail=prompt(
+  "Enter updated tutor email:",
+  tutor.email
+ );
+
+ if(newEmail===null)return;
+
+ const newSubject=prompt(
+  "Enter updated subject:",
+  tutor.subject
+ );
+
+ if(newSubject===null)return;
+
+ const newRate=prompt(
+  "Enter updated hourly rate:",
+  tutor.rate
+ );
+
+ if(newRate===null)return;
+
+ const name=newName.trim();
+
+ const email=newEmail.trim().toLowerCase();
+
+ const subject=newSubject.trim();
+
+ const rate=Number(newRate);
+
+ if(!name||!email||!email.includes("@")||!subject||
+ !Number.isFinite(rate)||rate<=0){
+
+  showMessage("Please enter valid tutor information.");
+
+  return;
+ }
+
+ if(tutors.some(t=>t.id!==id&&t.email===email)){
+
+  showMessage("That tutor email is already registered.");
+
+  return;
+ }
+
+ tutor.name=name;
+
+ tutor.email=email;
+
+ tutor.subject=subject;
+
+ tutor.rate=rate;
+
+ bookings.forEach(b=>{
+
+  if(b.tutorId===id){
+
+   b.tutor=name;
+
+   b.subject=subject;
+
+   b.rate=rate;
+  }
+
+ });
+
+ if(currentUser.id===id){
+
+  currentUser.name=name;
+
+  currentUser.email=email;
+
+  localStorage.setItem(
+   "currentStudent",
+   JSON.stringify(currentUser)
+  );
+ }
+
+ saveData();
+
+ displayAdminDashboard();
+
+ showMessage("Tutor account updated!");
+}
+
+// DELETE TUTOR
+function deleteTutor(id){
+
+ if(!currentUser||currentRole!=="admin")return;
+
+ if(!confirm("Delete this tutor account and their bookings?"))return;
+
+ tutors=tutors.filter(t=>t.id!==id);
+
+ bookings=bookings.filter(b=>b.tutorId!==id);
+
+ saveData();
+
+ displayAdminDashboard();
+
+ showMessage("Tutor account deleted.");
+}
+
+// ====================================
+// 11. ADMIN BOOKING MANAGEMENT
+// ====================================
+
+function renderAdminBookings(){
+
+ const area=document.getElementById("adminBookings");
+
+ if(!bookings.length){
+
+  area.innerHTML="<p>No bookings available.</p>";
+
+  return;
+ }
+
+ area.innerHTML=`
+  <table>
+   <tr>
+    <th>Student</th>
+    <th>Tutor</th>
+    <th>Subject</th>
+    <th>Date</th>
+    <th>Time</th>
+    <th>Status</th>
+    <th>Action</th>
+   </tr>
+
+   ${bookings.map(b=>`
+    <tr>
+     <td>${escapeHTML(b.studentName)}</td>
+     <td>${escapeHTML(b.tutor)}</td>
+     <td>${escapeHTML(b.subject)}</td>
+     <td>${escapeHTML(b.date)}</td>
+     <td>${escapeHTML(b.time)}</td>
+     <td>
+      <span class="status ${escapeHTML(b.status)}">
+       ${escapeHTML(b.status)}
+      </span>
+     </td>
+     <td>
+      <select onchange="adminUpdateBooking('${b.id}',this.value)">
+       <option value="">Change status</option>
+       <option value="Pending">Pending</option>
+       <option value="Accepted">Accepted</option>
+       <option value="Rejected">Rejected</option>
+       <option value="Cancelled">Cancelled</option>
+      </select>
+     </td>
+    </tr>
+   `).join("")}
+
+  </table>
+ `;
+}
+
+function adminUpdateBooking(id,status){
+
+ if(!currentUser||currentRole!=="admin"||!status)return;
+
+ const booking=bookings.find(b=>b.id===id);
+
+ if(!booking)return;
+
+ booking.status=status;
+
+ saveData();
+
+ displayAdminDashboard();
+
+ showMessage("Booking status updated.");
+}
+
+// ====================================
+// 12. INITIALIZE WEBSITE
+// ====================================
+
+updateAccountDisplay();
+
+displayTutors();
+
+displayStudentBookings();
+
+displayTutorDashboard();
+
+displayAdminDashboard();
+
+if("serviceWorker"in navigator){
+    window.addEventListener("load",()=>{
+        navigator.serviceWorker.register("./sw.js")
+        .then(() => {
+          console.log("TutorHub app is ready!");
+        })
+        .catch(error => {
+        console.error("Service Worker error: ", error);
+        });
+    });
+}
+</script>
+
+
+</body>
+</html>
